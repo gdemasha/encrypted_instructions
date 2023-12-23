@@ -1,28 +1,24 @@
-# ID успешной посылки: 103603274
+# ID успешной посылки: 103675429
 import sys
-
-from typing import List
 
 
 def instructions(cipher: str) -> str:
-    """
-    Программа, которая расшифровывает сжатые сообщения
-    и возвращает строку с командами.
-    """
+    """Принимает шифрованную строку, возвращает расшифрованную строку."""
     decoded: str = ''
     multiplier: str = ''
-    remember: List[str] = []
+    remember: list[tuple[str, str]] = []
 
     for symbol in cipher:
+
         if symbol.isdigit():
             multiplier += symbol
         elif symbol == '[':
-            remember.append(decoded)
-            remember.append(multiplier)
-            multiplier, decoded = '', ''
+            remember.append((decoded, multiplier))
+            decoded, multiplier = '', ''
         elif symbol == ']':
-            decoded *= int(remember.pop())
-            decoded = str(remember.pop()) + decoded
+            symbol, multiplier = remember.pop()
+            decoded *= int(multiplier)
+            decoded = symbol + decoded
             multiplier = ''
         else:
             decoded += symbol
@@ -31,5 +27,4 @@ def instructions(cipher: str) -> str:
 
 
 if __name__ == '__main__':
-    cipher = sys.stdin.readline().rstrip()
-    print(instructions(cipher))
+    print(instructions(sys.stdin.readline().rstrip()))
